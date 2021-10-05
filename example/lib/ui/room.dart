@@ -197,8 +197,11 @@ class RoomState extends State<Room> {
       }
     });
 
-    StringeeVideoTrackOptions options =
-        StringeeVideoTrackOptions(true, true, false);
+    StringeeVideoTrackOptions options = StringeeVideoTrackOptions(
+      audio: true,
+      video: true,
+      screen: false,
+    );
     widget._video.createLocalVideoTrack(options).then((value) {
       if (value['status']) {
         _room.publish(value['body']).then((value) {
@@ -219,7 +222,10 @@ class RoomState extends State<Room> {
     if (videoTrackList.length > 0) {
       videoTrackList.forEach((track) {
         StringeeVideoTrackOptions options = StringeeVideoTrackOptions(
-            track.audioEnable, track.videoEnable, track.isScreenCapture);
+          audio: track.audioEnable,
+          video: track.videoEnable,
+          screen: track.isScreenCapture,
+        );
         _room.subscribe(track, options).then((value) {
           if (value['status']) {
             setState(() {
@@ -237,7 +243,10 @@ class RoomState extends State<Room> {
 
   void handleAddVideoTrackEvent(StringeeVideoTrack addTrack) {
     StringeeVideoTrackOptions options = StringeeVideoTrackOptions(
-        addTrack.audioEnable, addTrack.videoEnable, addTrack.isScreenCapture);
+      audio: addTrack.audioEnable,
+      video: addTrack.videoEnable,
+      screen: addTrack.isScreenCapture,
+    );
     _room.subscribe(addTrack, options).then((value) {
       if (value['status']) {
         setState(() {
@@ -358,7 +367,7 @@ class RoomState extends State<Room> {
       if (result['status']) {
         _localTrack.close().then((value) {
           if (result['status']) {
-            _room.leave(false).then((value) {
+            _room.leave(allClient: false).then((value) {
               clearDataEndDismiss();
             });
           }
